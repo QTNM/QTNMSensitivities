@@ -33,3 +33,5 @@
 
 # Files edited with emacs
 *.*~
+
+build/
