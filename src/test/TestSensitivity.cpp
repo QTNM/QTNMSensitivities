@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   const double efficiency{0.075};
   const double sigRate{efficiency * numberDensity * volume * BF1EV / TLIFETIME};
 
-  Experiment exp(sigRate, bkg);
+  
 
   const double tMin{3600};
   const double tMax{3 * YEAR}; 
@@ -44,8 +44,9 @@ int main(int argc, char *argv[])
     // Log distribute points
     double logDiff{(log10(tMax) - log10(tMin)) / double(nPnts - 1)};
     double time{tMin * pow(10, double(n) * logDiff)};
-    gr90CL->SetPoint(n, time, exp.Compute90PcCL(time));
-    grSigmaMSq->SetPoint(n, time, exp.ComputeSigmaMSq(time));
+    Experiment exp(sigRate, bkg, time);
+    gr90CL->SetPoint(n, time, exp.Compute90PcCL());
+    grSigmaMSq->SetPoint(n, time, exp.ComputeSigmaMSq());
   }
 
   fout->cd();
