@@ -13,3 +13,8 @@ double sens::Experiment::ComputeSigmaMSq(double liveTime)
   double premult{2 / (3 * sigRate * liveTime)};
   return premult * sqrt(sigRate * liveTime * eOpt + bkgRate * liveTime / eOpt);
 }
+
+double sens::Experiment::Compute90PcCL(double liveTime)
+{
+  return sqrt(1.28 * ComputeSigmaMSq(liveTime));
+}
