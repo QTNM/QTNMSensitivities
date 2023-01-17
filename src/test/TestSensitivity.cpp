@@ -6,6 +6,8 @@
 
 #include "Experiment.h"
 
+#include "Formatting.h"
+
 #include "src/include/CommonNumbers.h"
 
 #include "TFile.h"
@@ -32,16 +34,23 @@ int main(int argc, char *argv[])
   const int nPnts{1000};
   TGraph *gr90CL = new TGraph();
   gr90CL->SetTitle("Neutrino mass limit; Live time [s]; 90% CL mass limit [eV]");
+  SetGraphAttr(gr90CL);
+  TGraph *grSigmaMSq = new TGraph();
+  grSigmaMSq->SetTitle("Neutrino mass limit; Live time [s]; #sigma_{m_{#beta}^{2}} [eV^{2}]");
+  SetGraphAttr(grSigmaMSq);
+
   for (int n{0}; n < nPnts; n++)
   {
     // Log distribute points
     double logDiff{(log10(tMax) - log10(tMin)) / double(nPnts - 1)};
     double time{tMin * pow(10, double(n) * logDiff)};
     gr90CL->SetPoint(n, time, exp.Compute90PcCL(time));
+    grSigmaMSq->SetPoint(n, time, exp.ComputeSigmaMSq(time));
   }
 
   fout->cd();
   gr90CL->Write("gr90CL");
+  grSigmaMSq->Write("grSigmaMSq");
 
   fout->Close();
   delete fout;
