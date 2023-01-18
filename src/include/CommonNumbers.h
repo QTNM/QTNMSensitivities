@@ -16,4 +16,10 @@ namespace sens
 
   // Mean tritium lifetime in seconds
   inline constexpr double TLIFETIME{560975924};
+
+  // Gamma for an 18.6 keV electron
+  inline constexpr double GAMMA_END{1.036399292};
+
+  // Beta for an 18.6 keV electron
+  inline constexpr double BETA_END{0.2626944088};
 }
