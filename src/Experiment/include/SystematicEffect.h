@@ -35,4 +35,14 @@ namespace sens
     /// @brief Constructor
     MolecularTritium();
   };
+
+  /// Systematic representing lack of uncertainty about magnetic field
+  class BFieldUncertainty : public SystematicEffect
+  {
+  public:
+    /// @brief Parametrised constructor
+    /// @param fieldVar RMS variation in magnetic field in tesla
+    /// @param bAvg Average magnetic field (in Tesla)
+    BFieldUncertainty(double fieldVar, double bAvg);
+  };
 }
