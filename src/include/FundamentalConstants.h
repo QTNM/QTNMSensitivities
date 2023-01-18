@@ -20,6 +20,9 @@ namespace sens
 
   // Elementary charge in coulombs
   inline constexpr double QE{1.602176634e-19};
+
+  // Speed of light in a vacuum
+  inline constexpr double CLIGHT{299792458};
 }
 
 #endif
