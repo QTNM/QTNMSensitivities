@@ -23,6 +23,9 @@ namespace sens
 
   // Speed of light in a vacuum
   inline constexpr double CLIGHT{299792458};
+
+  // Atomic mass unit/Dalton in kg
+  inline constexpr double DALTON{1.6605390666e-27};
 }
 
 #endif

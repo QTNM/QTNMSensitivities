@@ -22,4 +22,10 @@ namespace sens
 
   // Beta for an 18.6 keV electron
   inline constexpr double BETA_END{0.2626944088};
+
+  // Tritium atom mass in Daltons
+  inline constexpr double T_MASS_DA{3.01604928};
+
+  // Tritium molecule mass in Daltons
+  inline constexpr double T2_MASS_DA{6.032098563};
 }
