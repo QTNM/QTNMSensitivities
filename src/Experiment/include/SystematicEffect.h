@@ -5,6 +5,11 @@
   uncertainty on that RMS
 */
 
+#ifndef SYSTEMATIC_EFFECT_H
+#define SYSTEMATIC_EFFECT_H
+
+#include <string>
+
 namespace sens
 {
   class SystematicEffect
@@ -17,7 +22,8 @@ namespace sens
     /// @brief Parametrised constructor
     /// @param width RMS width in eV
     /// @param unc Uncertainty on RMS in eV
-    SystematicEffect(double width = 0, double unc = 0) : rmsWidth(width), widthUnc(unc) {}
+    SystematicEffect(double width = 0, double unc = 0)
+        : rmsWidth(width), widthUnc(unc) {}
 
     /// @brief Get the RMS width
     /// @return The RMS width in eV
@@ -67,3 +73,5 @@ namespace sens
     ThermalBroadening(double T, bool isAtomicTritium);
   };
 }
+
+#endif
