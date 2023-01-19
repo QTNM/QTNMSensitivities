@@ -26,6 +26,9 @@ namespace sens
 
   // Atomic mass unit/Dalton in kg
   inline constexpr double DALTON{1.6605390666e-27};
+
+  // Boltzmann constant
+  inline constexpr double KB{1.380649e-23}; // kg m^2 s^-2 K^-1
 }
 
 #endif
