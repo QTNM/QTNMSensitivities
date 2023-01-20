@@ -27,7 +27,7 @@ sens::GasScattering::GasScattering(double n, double b, bool isAtomicTritium)
 {
   systName = "Gas Scattering Syst";
   // Set the correct scattering cross section
-  double xsec{isAtomicTritium ? 9e-15 : 3.4e-14};
+  double xsec{isAtomicTritium ? 9e-23 : 3.4e-22};
   double f_c{(1 / (2 * M_PI)) * QE * b / (EMASS + 18.6e3 * QE / (CLIGHT * CLIGHT))};
   rmsWidth = (18.6e3 / (GAMMA_END - 1)) * BETA_END * CLIGHT * xsec * n / (2 * M_PI * f_c);
   widthUnc = rmsWidth * 0.01;
