@@ -37,11 +37,8 @@ sens::ThermalBroadening::ThermalBroadening(double T, bool isAtomicTritium)
 {
   systName = "Thermal Broadening Syst";
   double mass{isAtomicTritium ? DALTON * T_MASS_DA : DALTON * T2_MASS_DA};
-  // Calculate average velocity of atom or molecule
-  double vAvg{sqrt(3 * KB * T / mass)};
-  // Now calculate the energy difference for an endpoint electron
-  double beta1{(BETA_END * CLIGHT + vAvg) / CLIGHT};
-  double deltaE{((1 / sqrt(1 - beta1 * beta1)) - (1 / sqrt(1 - BETA_END * BETA_END))) * EMASS * CLIGHT * CLIGHT / QE};
-  rmsWidth = deltaE;
+  // RMS frequency change
+  double sigmaFOverF{sqrt(KB * T / (mass * CLIGHT * CLIGHT))};
+  rmsWidth = sigmaFOverF * 18.6e3 * GAMMA_END / (GAMMA_END - 1);
   widthUnc = rmsWidth * 0.01;
 }
