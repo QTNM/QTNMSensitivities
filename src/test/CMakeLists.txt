@@ -9,3 +9,7 @@ target_include_directories(Project8Sensitivities PRIVATE ${PROJECT_SOURCE_DIR}/i
 add_executable(DopplerBroadening DopplerBroadening.cpp)
 target_link_libraries(DopplerBroadening PRIVATE Experiment Formatting ${ROOT_LIBRARIES})
 target_include_directories(DopplerBroadening PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
+add_executable(StatsOnly StatsOnly.cpp)
+target_link_libraries(StatsOnly PRIVATE Experiment Formatting ${ROOT_LIBRARIES})
+target_include_directories(StatsOnly PRIVATE ${PROJECT_SOURCE_DIR}/include)
