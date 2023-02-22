@@ -14,10 +14,23 @@ namespace sens
 {
   class SystematicEffect
   {
-  protected:
+  private:
     double rmsWidth; // RMS width in eV
     double widthUnc; // Uncertainity on RMS in eV
     std::string systName; // Systematic name
+
+  protected:
+    /// @brief RMS setter
+    /// @param rms 
+    void SetRMSWidth(double rms);
+
+    /// @brief Width uncertainty setter
+    /// @param unc 
+    void SetWidthUnc(double unc);
+
+    /// @brief Systematic name setter
+    /// @param name 
+    void SetSystName(std::string name);
 
   public:
     /// @brief Parametrised constructor
