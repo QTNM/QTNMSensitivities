@@ -17,6 +17,7 @@
 #include "TAxis.h"
 #include "TFile.h"
 #include "TGraph.h"
+#include "TLegend.h"
 #include "TMath.h"
 #include "TMultiGraph.h"
 #include "TString.h"
@@ -63,18 +64,21 @@ int main(int argc, char* argv[]) {
   const double deltaE{deltaEOverE * eKE};
 
   // Spread in atom speeds
-  const double sigmaV{20};  // m/s
+  const double sigmaV{5};  // m/s
   // Atom temperature
   const double effT{T_MASS_DA * DALTON * sigmaV * sigmaV / (3 * KB)};  // K
   std::cout << "Effective atom temperature = " << effT << " K\n";
   // Define thermal broadening systematic
   ThermalBroadening thermalSyst(effT, true);
   // Magnetic field systematics
+  BFieldUncertainty bSyst50ppt(5e-8 * bField, bField);
   BFieldUncertainty bSyst100ppt(1e-7 * bField, bField);
   BFieldUncertainty bSyst1ppm(1e-6 * bField, bField);
   // Gas scattering systematic
   GasScattering scatSyst(nAtom1, bField, true);
   // Energy resolution systematics
+  SystematicEffect eResSyst50ppt(eKE * 0.05e-6, eKE * 0.05e-6 * 0.01,
+                                 "50ppt energy resolution");
   SystematicEffect eResSyst100ppt(eKE * 0.1e-6, eKE * 0.1e-6 * 0.01,
                                   "100ppt energy resolution");
   SystematicEffect eResSyst1ppm(eKE * 1e-6, eKE * 1e-6 * 0.01,
@@ -149,6 +153,8 @@ int main(int argc, char* argv[]) {
   // Keep 0.7 T as field choice in all cases and don't change the temperature of
   // the atoms
 
+  auto leg = new TLegend(0.2, 0.2, 0.8, 0.8);
+  
   // Sample 1: N = 10^13 cm^-3
   // 1 ppm field uniformity and 10 ppm energy resolution
   const double n1{1e19};  // m^-3
@@ -158,13 +164,21 @@ int main(int argc, char* argv[]) {
   systs1.push_back(GasScattering(n1, bField, true));
   auto gr90CL_1 = new TGraph();
   SetGraphAttr(gr90CL_1);
+  gr90CL_1->GetXaxis()->SetLabelSize(0.07);
+  gr90CL_1->GetYaxis()->SetLabelSize(0.07);
+  gr90CL_1->GetXaxis()->SetTitleSize(0.07);
+  gr90CL_1->GetYaxis()->SetTitleSize(0.07);
   gr90CL_1->SetLineWidth(3);
   gr90CL_1->SetLineColor(kRed);
   gr90CL_1->SetTitle(
       "N = 10^{13} cm^{-3}, #sigma_{B} = 1 ppm, #sigma_{E} = 10 ppm");
-  gr90CL_1->GetXaxis()->SetTitle("Exposure [m^{3} yr]");
+  gr90CL_1->GetXaxis()->SetTitle(
+      "Efficiency #times Volume #times Time [m^{3} yr]");
   gr90CL_1->GetYaxis()->SetTitle("90% CL on m_{#beta} [eV]");
+  leg->AddEntry(gr90CL_1,
+		"#splitline{N = 10^{13} cm^{-3},}{#sigma_{B} = 1 ppm, #sigma_{E} = 10 ppm}", "l");
 
+  
   auto grSigma_1 = new TGraph();
   SetGraphAttr(grSigma_1);
   grSigma_1->SetLineWidth(3);
@@ -175,64 +189,71 @@ int main(int argc, char* argv[]) {
       "Efficiency #times Volume #times Time [m^{3} yr]");
   grSigma_1->GetYaxis()->SetTitle("#sigma_{m^{2}_{#beta}} [eV^{2}]");
 
-  // Sample 2: N = 2 x 10^12 cm^-3
-  // 1 ppm field uniformity and 10 ppm energy resolution
-  const double n2{2e18};  // m^-3
+  // Sample 2: N = 4 x 10^12 cm^-3
+  // 0.1 ppm field uniformity and 0.1 ppm energy resolution
+  const double n2{4e18};  // m^-3
   std::vector<SystematicEffect> systs2{thermalSyst};
-  systs2.push_back(bSyst1ppm);
-  systs2.push_back(eResSyst10ppm);
+  systs2.push_back(bSyst50ppt);
+  systs2.push_back(eResSyst50ppt);
   systs2.push_back(GasScattering(n2, bField, true));
   auto gr90CL_2 = new TGraph();
   SetGraphAttr(gr90CL_2);
   gr90CL_2->SetLineWidth(3);
   gr90CL_2->SetLineColor(kCyan + 1);
+  gr90CL_2->SetLineStyle(9);
   gr90CL_2->SetTitle(
-      "N = 2 #times 10^{12} cm^{-3}, #sigma_{B} = 1 ppm, #sigma_{E} = 10 ppm");
+      "N = 4 #times 10^{12} cm^{-3}, #sigma_{B} = 50 ppt, #sigma_{E} = 50 ppt");
   gr90CL_2->GetXaxis()->SetTitle(
       "Efficiency #times Volume #times Time [m^{3} yr]");
   gr90CL_2->GetYaxis()->SetTitle("90% CL on m_{#beta} [eV]");
-
+  leg->AddEntry(gr90CL_2,
+		"#splitline{N = 4 #times 10^{12} cm^{-3},}{#sigma_{B} = 50 ppt, #sigma_{E} = 50 ppt}", "l");
+  
   auto grSigma_2 = new TGraph();
   SetGraphAttr(grSigma_2);
   grSigma_2->SetLineWidth(3);
   grSigma_2->SetLineColor(kCyan + 1);
+  grSigma_2->SetLineStyle(9);
   grSigma_2->SetTitle(
-      "N = 2 #times 10^{12} cm^{-3}, #sigma_{B} = 1 ppm, #sigma_{E} = 10 ppm");
+      "N = 4 #times 10^{12} cm^{-3}, #sigma_{B} = 50 ppt, #sigma_{E} = 50 ppt");
   grSigma_2->GetXaxis()->SetTitle(
       "Efficiency #times Volume #times Time [m^{3} yr]");
   grSigma_2->GetYaxis()->SetTitle("#sigma_{m^{2}_{#beta}} [eV^{2}]");
 
-  // Sample 3: N = 2 x 10^12 cm^-3
-  // 0.1 ppm field uniformity and 0.1 ppm energy resolution
-  const double n3{2e18};  // m^-3
+  // Sample 3: N = 1 x 10^12 cm^-3
+  // 50 ppt field uniformity and 50 ppt energy resolution
+  const double n3{1e18};  // m^-3
   std::vector<SystematicEffect> systs3{thermalSyst};
-  systs3.push_back(bSyst100ppt);
-  systs3.push_back(eResSyst100ppt);
+  systs3.push_back(bSyst50ppt);
+  systs3.push_back(eResSyst50ppt);
   systs3.push_back(GasScattering(n3, bField, true));
   auto gr90CL_3 = new TGraph();
   SetGraphAttr(gr90CL_3);
   gr90CL_3->SetLineWidth(3);
   gr90CL_3->SetLineColor(kOrange + 1);
+  gr90CL_3->SetLineStyle(10);
   gr90CL_3->SetTitle(
-      "N = 2 #times 10^{12} cm^{-3}, #sigma_{B} = 0.1 ppm, #sigma_{E} = 0.1 "
-      "ppm");
+      "N = 10^{12} cm^{-3}, #sigma_{B} = 50 ppt, #sigma_{E} = 50 ppt");
   gr90CL_3->GetXaxis()->SetTitle(
       "Efficiency #times Volume #times Time [m^{3} yr]");
   gr90CL_3->GetYaxis()->SetTitle("90% CL on m_{#beta} [eV^{2}]");
-
+  leg->AddEntry(gr90CL_3,
+		"#splitline{N = 10^{12} cm^{-3},}{#sigma_{B} = 50 ppt, #sigma_{E} = 50 ppt}", "l");
+  
   auto grSigma_3 = new TGraph();
   SetGraphAttr(grSigma_3);
   grSigma_3->SetLineWidth(3);
   grSigma_3->SetLineColor(kOrange + 1);
+  grSigma_3->SetLineStyle(10);
   grSigma_3->SetTitle(
-      "N = 2 #times 10^{12} cm^{-3}, #sigma_{B} = 1 ppm, #sigma_{E} = 10 ppm");
+      "N = 10^{12} cm^{-3}, #sigma_{B} = 50 ppt, #sigma_{E} = 50 ppt");
   grSigma_3->GetXaxis()->SetTitle(
       "Efficiency #times Volume #times Time [m^{3} yr]");
   grSigma_3->GetYaxis()->SetTitle("#sigma_{m^{2}_{#beta}} [eV^{2}]");
 
   const uint nExpPnts{500};
-  const double expMin{1e-5};
-  const double expMax{1e4};
+  const double expMin{1e-4};
+  const double expMax{1e5};
   const double logExpDiff{(log10(expMax) - log10(expMin)) /
                           double(nExpPnts - 1)};
   const double v{10};  // m^3
@@ -258,13 +279,15 @@ int main(int argc, char* argv[]) {
   }
 
   fout.cd();
+  gr90CL_1->GetYaxis()->SetRangeUser(1e-3, 1);
   gr90CL_1->Write("gr90CL_1");
   gr90CL_2->Write("gr90CL_2");
   gr90CL_3->Write("gr90CL_3");
+  leg->Write("leg");
   grSigma_1->Write("grSigma_1");
   grSigma_2->Write("grSigma_2");
   grSigma_3->Write("grSigma_3");
-
+  
   fout.Close();
   return 0;
 }
